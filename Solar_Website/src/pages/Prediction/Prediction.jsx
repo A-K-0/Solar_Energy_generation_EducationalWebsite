@@ -4,6 +4,11 @@ import { useState } from 'react'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet'
+
+import { Description, Field, Fieldset, Input, Label, Legend, Select, Textarea } from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import clsx from 'clsx'
+
 import 'leaflet/dist/leaflet.css'
 
 const navigation = [
@@ -15,7 +20,27 @@ const navigation = [
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [latLng, setLatLng] = useState(null)
+  const [latLng, setLatLng] = useState(null);
+
+  const handleClick = (e) => {
+    const { offsetX, offsetY } = e.nativeEvent;
+    const img = e.target;
+    const width = img.width;
+    const height = img.height;
+
+    // India's approximate bounding box coordinates
+    const indiaBounds = {
+      minLat: 8.4,
+      maxLat: 37.6,
+      minLng: 68.7,
+      maxLng: 97.25,
+    };
+
+    // Calculate latitude and longitude based on click position
+    const lat = indiaBounds.maxLat - (offsetY / height) * (indiaBounds.maxLat - indiaBounds.minLat);
+    const lng = indiaBounds.minLng + (offsetX / width) * (indiaBounds.maxLng - indiaBounds.minLng);
+
+    setLatLng({ lat, lng });
 
   const MapClickHandler = () => {
     useMapEvents({
@@ -27,6 +52,7 @@ export default function Example() {
     })
     return null
   }
+}
 
   return (
     <div className="bg-black min-h-screen">
@@ -104,35 +130,87 @@ export default function Example() {
 
         <div className="flex h-screen">
           <div className="w-2/4 bg-transparent">
-          <MapContainer
-  center={[22.5937, 82.9629]}
-  zoom={5}
-  style={{ height: '90%', width: '100%' }}
-  zoomControl={false}
-  scrollWheelZoom={false}
-  doubleClickZoom={false}
-  touchZoom={false}
-  dragging={false} // Disable dragging
->
-<TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              />
-              <MapClickHandler />
-            </MapContainer>
-            
+
+<img
+            src="./Untitled_design-removebg-preview.png" // Path to the PNG file in the public folder
+            alt="India Map"
+            className="w-176 h-176 object-contain bg-transparent"
+            onClick={handleClick}
+          />
+
           </div>
           <div className="flex-1 bg-transparent">
-
-          {latLng && (
-              <div className="absolute bottom-0 left-0 p-4 bg-white">
-                Latitude: {latLng.lat}, Longitude: {latLng.lng}
-              </div>
+          <div className="w-full max-w-lg px-4">
+      <Fieldset className="space-y-6 rounded-xl bg-white/5 p-6 sm:p-10">
+        <Legend className="text-lg font-semibold text-white text-center">Prediction</Legend>
+        <Field>
+          <Label className="text-sm/6 font-medium text-white">Latitude</Label>
+          <Input
+            className={clsx(
+              'mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white',
+              'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
             )}
+            value={latLng.lat.toFixed(4)}
+          />
+        </Field>
+        <Field>
+          <Label className="text-sm/6 font-medium text-white">Longitude</Label>
+          <Input
+            className={clsx(
+              'mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white',
+              'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+            )}
+            value={latLng.lng.toFixed(4)}
+          />
+        </Field>
+        <Field>
+          <Label className="text-sm/6 font-medium text-white">Prediction</Label>
+          <Description className="text-sm/6 text-white/50">We keep 5 parameters as our base.Which are</Description>
+          <div className="relative">
+            <Select
+              className={clsx(
+                'mt-3 block w-full appearance-none rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white',
+                'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25',
+                // Make the text of each option black on Windows
+                '*:text-black'
+              )}
+            >
+              <option>Canada</option>
+              <option>Mexico</option>
+              <option>United States</option>
+            </Select>
+            <ChevronDownIcon
+              className="group pointer-events-none absolute top-2.5 right-2.5 size-4 fill-white/60"
+              aria-hidden="true"
+            />
           </div>
+        </Field>
+        <Field>
+          <Label className="text-sm/6 font-medium text-white">Delivery notes</Label>
+          <Description className="text-sm/6 text-white/50">
+            If you have a tiger, we'd like to know about it.
+          </Description>
+          <Textarea
+            className={clsx(
+              'mt-3 block w-full resize-none rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white',
+              'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+            )}
+            
+            
+            rows={3}
+          />
           
+        </Field>
+      </Fieldset>
+    </div>
+
+
+          </div>
         </div>
       </div>
     </div>
   )
 }
+
+
+   
