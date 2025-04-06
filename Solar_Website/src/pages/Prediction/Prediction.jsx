@@ -20,7 +20,7 @@ const navigation = [
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [latLng, setLatLng] = useState(null);
+  const [latLng, setLatLng] = useState({ lat: 0, lng: 0 }); // Initialize with default values
 
   const handleClick = (e) => {
     const { offsetX, offsetY } = e.nativeEvent;
@@ -40,18 +40,8 @@ export default function Example() {
     const lat = indiaBounds.maxLat - (offsetY / height) * (indiaBounds.maxLat - indiaBounds.minLat);
     const lng = indiaBounds.minLng + (offsetX / width) * (indiaBounds.maxLng - indiaBounds.minLng);
 
-    setLatLng({ lat, lng });
+    setLatLng({lat,lng});
 
-  const MapClickHandler = () => {
-    useMapEvents({
-      click: (e) => {
-        const { lat, lng } = e.latlng
-        setLatLng({ lat, lng })
-        console.log(`Latitude: ${lat}, Longitude: ${lng}`)
-      },
-    })
-    return null
-  }
 }
 
   return (
@@ -151,6 +141,7 @@ export default function Example() {
               'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
             )}
             value={latLng.lat.toFixed(4)}
+            readOnly
           />
         </Field>
         <Field>
@@ -161,6 +152,7 @@ export default function Example() {
               'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
             )}
             value={latLng.lng.toFixed(4)}
+            readOnly
           />
         </Field>
         <Field>
