@@ -1,0 +1,7 @@
+Django
+django-cors-headers
+django-import-export
+djangorestframework
+djongo
+matplotlib==3.6.2
+numpy==1.23.5

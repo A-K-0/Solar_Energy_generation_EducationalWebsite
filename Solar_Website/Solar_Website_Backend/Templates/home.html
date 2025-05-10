@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parse CSV File</title>
+</head>
+
+<body>
+    <h3 align="center">
+        Please Upload CSV File
+    </h3>
+    <hr>
+    <br>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="myfile">
+        <button type="submit">Upload File</button>
+    </form>
+    <br>
+    <hr>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+        <p{% if message.tags %} class="" {% endif %}>{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+</body>
+
+</html>
