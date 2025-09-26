@@ -1,78 +1,86 @@
-import json
-from django.http import HttpResponse, JsonResponse
-from matplotlib import pyplot as plt
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from wordcloud import WordCloud
-from .models import PaperRank
-from .serializers import PaperRankSerializer
-import csv, io
-from django.db import transaction
-from django.db.models import Min, Max, Count
-from collections import Counter
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-import google.generativeai as genai
-from dotenv import load_dotenv
-import re
-import io
-import base64
-import atexit
-import os
-import csv
-import io
-import pandas as pd
-from django.http import JsonResponse, HttpResponse
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-import pandas as pd
-from .models import PaperRank
-import re
-from django.db import transaction
-from wordcloud import WordCloud
-from collections import Counter
-import matplotlib.pyplot as plt
-import base64
-from django.db.models import Min, Max, Count
-import io
-from .serializers import PaperRankSerializer
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import google.generativeai as genai
-from dotenv import load_dotenv
-import os
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-import os
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from rest_framework import status
-from .model_loader import make_prediction
+import requests
+import json
+
+# ngrok URL - Update this with your ngrok URL
+NGROK_URL = 'https://5e7f-34-75-95-204.ngrok-free.app'
+
+@api_view(['GET'])
+def check_ngrok_status(request):
+    """
+    Check if the ngrok service is available
+    """
+    try:
+        response = requests.get(f'{NGROK_URL}/health')
+        if response.ok:
+            return JsonResponse({'status': 'online'})
+        else:
+            return JsonResponse({'status': 'offline'})
+    except Exception as e:
+        print(f"Error checking ngrok status: {str(e)}")
+        return JsonResponse({'status': 'offline'})
 
 @api_view(['POST'])
-def Predict_Solargeneration(request):
-    print("Predict_Solargeneration called")
-    
+def predict(request):
+    """
+    Forward prediction request to ngrok service
+    """
     try:
-        # Access the JSON data from the request
+        # Get the JSON data from the React frontend
         data = request.data
-        print("Received data:", data)
+        print("Received data from frontend:", data)
         
-        # Validate required fields (example)
-        required_fields = ['latitude', 'longitude', 'temperature', 'solar_radiation', 'humidity', 'precipitation','solar_energy','cloud_cover','dew_point']
-        for field in required_fields:
-            if field not in data:
-                return Response({'error': f'Missing field: {field}'}, status=status.HTTP_400_BAD_REQUEST)
+        # Forward the request to ngrok with the exact same data structure
+        ngrok_response = requests.post(
+            f'{NGROK_URL}/weather_prediction',
+            json=data,
+            headers={
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
+            },
+            timeout=10
+        )
         
-        prediction = make_prediction(input_data)
+        print(f"ngrok response status: {ngrok_response.status_code}")
         
-        return Response({'prediction': prediction}, status=status.HTTP_200_OK)
+        # If ngrok returns an error
+        if not ngrok_response.ok:
+            try:
+                error_data = ngrok_response.json()
+                return Response(
+                    {'error': error_data.get('error', f'Error from prediction service: {ngrok_response.status_code}')}, 
+                    status=ngrok_response.status_code
+                )
+            except Exception:
+                return Response(
+                    {'error': f'Error from prediction service: {ngrok_response.status_code}'}, 
+                    status=ngrok_response.status_code
+                )
         
+        # If successful, return the ngrok response to the frontend
+        try:
+            response_data = ngrok_response.json()
+            print("ngrok response data:", response_data)
+            return Response(response_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(f"Error parsing ngrok response: {str(e)}")
+            return Response(
+                {'error': 'Error parsing response from prediction service'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+            
+    except requests.exceptions.RequestException as e:
+        print(f"Connection error to ngrok: {str(e)}")
+        return Response(
+            {'error': 'Unable to connect to prediction service'}, 
+            status=status.HTTP_503_SERVICE_UNAVAILABLE
+        )
     except Exception as e:
-        print("Error:", str(e))
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+        print(f"Unexpected error: {str(e)}")
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

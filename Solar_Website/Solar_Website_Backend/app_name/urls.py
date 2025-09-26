@@ -1,7 +1,8 @@
 from django.urls import path
 
-from .views import Predict_Solargeneration
+from .views import predict, check_ngrok_status
 
 urlpatterns = [
-    path('api/Predict_Solargeneration/', Predict_Solargeneration, name='predict-solargeneration')
+    path('api/predict/', predict, name='predict'),
+    path('api/check-ngrok-status/', check_ngrok_status, name='check-ngrok-status')
 ]

@@ -35,3 +35,25 @@
 .read-the-docs {
   color: #888;
 }
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background-color: white;
+  transform: translate(-50%, -50%);
+}
+.star-large {
+  width: 2px;
+  height: 2px;
+  animation: twinkle 3s infinite alternate;
+  box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.8);
+}
+.star-small {
+  width: 1px;
+  height: 1px;
+  box-shadow: 0 0 3px 0.5px rgba(255, 255, 255, 0.6);
+}
+@keyframes twinkle {
+  0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.8); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+}
