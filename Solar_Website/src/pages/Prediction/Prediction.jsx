@@ -33,7 +33,7 @@ export default function PredictionPage() {
   const [locationName, setLocationName] = useState('New Delhi, India'); // Default location
   const [isPredicting, setIsPredicting] = useState(false);
 
-  const API_KEY = 'CXSDGPENVV5K7B9PBSPNDG8AU';
+  const API_KEY = '<REPLACE_WITH_YOUR_API_KEY>';
   const today = new Date().toISOString().split('T')[0];
 
   // Load default data on first render
