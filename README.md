@@ -4,7 +4,7 @@
 
 This advanced platform uses machine learning and real-time weather data to provide accurate, location-specific forecasts, making solar energy planning simple and efficient.
 
-![Welcome to Solar Sense homepage](image_6c1dc6.jpg)
+![Welcome to Solar Sense homepage](Solar_Website/public/Screenshot%202025-09-26%20131921.png)
 
 ---
 
@@ -21,7 +21,7 @@ To provide **accurate, location-specific predictions** of solar power generation
 * Create an **intuitive interface** for both professionals and homeowners.
 * Support **India's transition to renewable energy sources**.
 
-![Solar Power Prediction Guide section with Mission and Objectives](image_6c1de5.png)
+![Solar Power Prediction Guide section with Mission and Objectives](Solar_Website/public/Screenshot%202025-09-26%20132126.png)
 
 ---
 
@@ -55,7 +55,7 @@ Generating a prediction is easy and takes just a few clicks!
 ### **1. Select Location**
 Click anywhere on the map of India. The system instantly detects the coordinates and populates the **Location, Latitude, and Longitude** fields.
 
-![Solar Power Prediction interface showing the India map and the location details](image_6c1dde.jpg)
+![Solar Power Prediction interface showing the India map and the location details](Solar_Website/public/Screenshot%202025-09-26%20132047.png)
 
 ### **2. Review Weather Data**
 The system automatically fetches and displays up-to-the-second weather data for your selected location:
@@ -70,7 +70,7 @@ The system automatically fetches and displays up-to-the-second weather data for 
 ### **3. Generate Prediction**
 Click the green **"Predict Solar Generation"** button to feed the real-time weather data into our advanced SVR machine learning model.
 
-!(image_6c1de2.png)
+![Result_generation](Solar_Website/public/Screenshot%202025-09-26%20132055.png)
 
 ### **4. Analyze Results**
 The predicted value will appear in the **Predicted Solar Power (kWh)** field, providing you with a precise energy forecast.
